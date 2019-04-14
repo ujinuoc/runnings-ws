@@ -9,7 +9,8 @@ from datetime import datetime
 from dateutil.parser import parse
 import mechanize
 import csv
-
+import urllib
+import urllib.robotparser as urobot
 
 class CarrerasScraper():
 
@@ -56,7 +57,8 @@ class CarrerasScraper():
 			runnings.append(running)
 
 		return runnings
-		
+	
+	# Scrape function
 	def scrape(self):
 		print("Web Scraping of running events in spain from '" + self.url + "'...")
 
@@ -65,6 +67,32 @@ class CarrerasScraper():
 		# Start timer
 		start_time = time.time()
 
+		# Get robots.txt to check if scraping is permitted
+		url = "http://www.corriendovoy.com"
+                rp = urobot.RobotFileParser()
+                rp.set_url(url + "/robots.txt")
+                rp.read()
+		# Check the content of robots.txt
+                if rp.can_fetch("*", url):
+                        site = urllib.request.urlopen(url)
+                        sauce = site.read()
+                        soup = BeautifulSoup(sauce, "html.parser")
+                        actual_url = site.geturl()[:site.geturl().rfind('/')]
+
+                        my_list = soup.find_all("calendario-carreras", href=True)
+                        for i in my_list:
+                                # rather than != "#" you can control your list before loop over it
+                                if i != "#":
+                                        newurl = str(actual_url+"/")
+                                        try:
+                                                if rp.can_fetch("*", newurl):
+                                                        site = urllib.request.urlopen(newurl)
+                                                        # do what you want on each authorized webpage
+                                        except:
+                                                pass
+                else:
+                        print("Scraping is not allowed")
+		
 		# Browse with mechanize
 		br = mechanize.Browser()
 		br.open(self.url)
