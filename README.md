@@ -18,3 +18,4 @@ La actividad ha sido realizada por:
 
 # Recursos
 
+El programa requiere Python 3 para su ejecución
