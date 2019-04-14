@@ -95,6 +95,8 @@ class CarrerasScraper():
 		
 		# Browse with mechanize
 		br = mechanize.Browser()
+		# Change default user agent
+		br.addheaders = [('User-Agent', ua.random), ('Accept', '*/*')]
 		br.open(self.url)
 
 		# Select search form
