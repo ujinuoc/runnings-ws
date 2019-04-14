@@ -11,6 +11,7 @@ import mechanize
 import csv
 import urllib
 import urllib.robotparser as urobot
+from fake_useragent import UserAgent
 
 class CarrerasScraper():
 
@@ -95,7 +96,7 @@ class CarrerasScraper():
 		
 		# Browse with mechanize
 		br = mechanize.Browser()
-		# Change default user agent
+		# Change default user agent. Use fake-useragent to generate random user agents.
 		br.addheaders = [('User-Agent', ua.random), ('Accept', '*/*')]
 		br.open(self.url)
 
